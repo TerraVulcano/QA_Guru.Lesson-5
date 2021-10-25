@@ -2,6 +2,7 @@ package terravulcano.allure;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
+import io.qameta.allure.Allure;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -11,7 +12,11 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 import static io.qameta.allure.Allure.step;
 
-public class GitHubTestLambda {
+public class GitHubTest_LambdaSteps {
+    private final static String REPOSITORY = "eroshenkoam/allure-example";
+    private final static int ISSUE_NUMBER = 68;
+    private final String BASE_URL = "https://github.com";
+
 
     @BeforeAll
     static void setup() {
@@ -21,22 +26,25 @@ public class GitHubTestLambda {
     @Test
     public void SearchForIssue() {
 
+        Allure.parameter("Repository", REPOSITORY);
+        Allure.parameter("Issue Number", ISSUE_NUMBER);
+
         step("Окрываем главную страницу", () -> {
-            open("https:github.com");
+            open(BASE_URL);
         });
         step("Ищем репозиторий", () -> {
             $(".header-search-input").click();
-            $(".header-search-input").sendKeys("eroshenkoam/allure-example");
+            $(".header-search-input").sendKeys(REPOSITORY);
             $(".header-search-input").submit();
         });
         step("Переходим в репозиторий", () -> {
-            $(By.linkText("eroshenkoam/allure-example")).click();
+            $(By.linkText(REPOSITORY)).click();
         });
         step("Переходим в таб Issues", () -> {
-            $("#issues-tab1").click();
+            $("#issues-tab").click();
         });
         step("Проверяем наличие Issue номер 68", () -> {
-            $(withText("#68")).should(Condition.exist);
+            $(withText("#" + ISSUE_NUMBER)).should(Condition.exist);
         });
     }
 }
